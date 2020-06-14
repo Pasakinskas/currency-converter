@@ -7,7 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface CurrencyRateRepository extends JpaRepository<CurrencyRate, Long> {
-    List<CurrencyRate> findByCurrencyCode(String currencyCode);
+
+    CurrencyRate findFirstByCurrencyCodeOrderByTimeRecordedDesc(String currencyCode);
+
+    default CurrencyRate findByCurrencyCode(String email) {
+        return findFirstByCurrencyCodeOrderByTimeRecordedDesc(email);
+    }
 
     @Query("SELECT DISTINCT currencyRate.currencyCode FROM CurrencyRate currencyRate")
     List<String> findDistinctCurrencyCodes();

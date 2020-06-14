@@ -1,11 +1,17 @@
 package com.pasakinskas.currencyconverter.models;
 
-import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
+import javax.validation.Validator;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name="currency_rates")
@@ -22,6 +28,7 @@ public class CurrencyRate {
     private String baseCurrency;
 
     @NotNull
+    @Column(precision=20, scale=10)
     private BigDecimal rateToBaseCurrency;
 
     @NotNull
@@ -79,5 +86,30 @@ public class CurrencyRate {
 
     public void setTimeRecorded(Instant timeRecorded) {
         this.timeRecorded = timeRecorded;
+    }
+
+    @Override
+    public String toString() {
+        return "CurrencyRate{" +
+                "id=" + id +
+                ", currencyCode='" + currencyCode + '\'' +
+                ", baseCurrency='" + baseCurrency + '\'' +
+                ", rateToBaseCurrency=" + rateToBaseCurrency +
+                ", timeRecorded=" + timeRecorded +
+                '}';
+    }
+
+    public boolean validate() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        Set<ConstraintViolation<CurrencyRate>> violations = validator.validate(this);
+        if (violations.isEmpty()) {
+            return true;
+        }
+        String errorMessage = violations
+                .stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.joining(","));
+        throw new RuntimeException(errorMessage);
     }
 }
