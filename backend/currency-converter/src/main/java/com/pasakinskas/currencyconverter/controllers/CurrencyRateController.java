@@ -1,6 +1,7 @@
 package com.pasakinskas.currencyconverter.controllers;
 
 import com.pasakinskas.currencyconverter.dataAccess.CurrencyRateRepository;
+import com.pasakinskas.currencyconverter.dataTransfer.CurrencyRateDTO;
 import com.pasakinskas.currencyconverter.models.CurrencyRate;
 import com.pasakinskas.currencyconverter.services.CurrencyRateFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,17 @@ public class CurrencyRateController {
     }
 
     @GetMapping("/currency-rates/{code}")
-    public ResponseEntity<CurrencyRate> getCurrencyRate(@PathVariable("code") String currencyCode) {
-        return new ResponseEntity<>(currencyRateRepository.findByCurrencyCode(currencyCode), HttpStatus.OK);
+    public ResponseEntity<CurrencyRateDTO> getCurrencyRate(@PathVariable("code") String currencyCode) {
+        CurrencyRate currencyRate = currencyRateRepository.findByCurrencyCode(currencyCode);
+        if (currencyRate != null) {
+            CurrencyRateDTO rate = new CurrencyRateDTO(
+                    currencyRate.getCurrencyCode(),
+                    currencyRate.getBaseCurrency(),
+                    currencyRate.getRateToBaseCurrency()
+            );
+            return new ResponseEntity<>(rate, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/update-rates")
@@ -41,11 +51,5 @@ public class CurrencyRateController {
     public ResponseEntity<List<String>> getUniqueCurrencies() {
         List<String> currencyCodes = currencyRateRepository.findDistinctCurrencyCodes();
         return new ResponseEntity<>(currencyCodes, HttpStatus.OK);
-    }
-
-    @GetMapping("/test")
-    public ResponseEntity<String> testScheduler() {
-        System.out.println("I was asked to update at " + Instant.now());
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
