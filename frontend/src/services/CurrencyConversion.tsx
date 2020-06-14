@@ -1,4 +1,4 @@
-import Big, { RoundingMode } from 'big.js';
+import Big from 'big.js';
 
 export function convertCurrency(
   startCurrencyRate: string,
@@ -14,5 +14,10 @@ export function convertCurrency(
 
 export async function fetchCurrencyCodes() {
   const res = await fetch("http://localhost:8080/currencies");
+  return res.json();
+}
+
+export async function fetchCurrencyRate(currencyCode: string) {
+  const res = await fetch(`http://localhost:8080/currency-rates/${currencyCode}`);
   return res.json();
 }
