@@ -1,6 +1,5 @@
 package com.pasakinskas.cronservice;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,6 +22,5 @@ public class CronService {
         if (response.getStatusCode().isError()) {
             throw new WebServiceException("Error contacting currency converter server");
         }
-        System.out.println(response.getStatusCode());
     }
 }
