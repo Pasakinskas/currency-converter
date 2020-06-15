@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`currencyDropdown Renders correctly 1`] = `
+Array [
+  <label
+    htmlFor="test-id"
+  >
+    mock-dropdown
+  </label>,
+  <select
+    className="pure-u-1-5"
+    defaultValue="DEFAULT"
+    id="test-id"
+    onChange={[Function]}
+  >
+    <option
+      disabled={true}
+      hidden={true}
+      value="DEFAULT"
+    >
+      -
+    </option>
+    <option>
+      EUR
+    </option>
+    <option>
+      GBP
+    </option>
+    <option>
+      USD
+    </option>
+  </select>,
+]
+`;

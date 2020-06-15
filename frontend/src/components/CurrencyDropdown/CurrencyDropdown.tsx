@@ -19,7 +19,8 @@ export function CurrencyDropdown(props: currencyDropdownProps) {
   return (
     <React.Fragment>
       <label htmlFor={id}>{labelText}</label>
-      <select id={id} className="pure-u-1-5" onChange={handleChange}>
+      <select id={id} className="pure-u-1-5" defaultValue={"DEFAULT"} onChange={handleChange} >
+        <option value="DEFAULT" disabled hidden>-</option>
         {currencyCodes
           .sort()
           .map(code => <option key={code}>{code}</option>)

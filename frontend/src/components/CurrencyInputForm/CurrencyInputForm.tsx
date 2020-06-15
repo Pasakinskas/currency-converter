@@ -7,6 +7,7 @@ import {
   fetchCurrencyRate,
   getConversionRate,
 } from "../../services/CurrencyConversion";
+import "./CurrencyInputForm.css";
 
 export function CurrencyInputForm() {
   const [initialCurrency, setInitialCurrency] = React.useState("");
@@ -17,6 +18,8 @@ export function CurrencyInputForm() {
   const [currencyCodes, setCurrencyCodes] = React.useState([]);
   const [currencyRates, setCurrencyRates] = React.useState(new Map());
   const [conversionRate, setConversionRate] = React.useState("");
+
+  const [showErrorMessage, setShowErrorMessage] = React.useState(false)
 
   React.useEffect(() => {
     const asyncGetCurrencyCodes = async () => {
@@ -39,12 +42,20 @@ export function CurrencyInputForm() {
   }, [currencyRates, initialCurrency, targetCurrency]);
 
   const convert = () => {
-    const convertedAmount = convertCurrency(
-      currencyRates.get(initialCurrency),
-      currencyRates.get(targetCurrency),
-      initialAmount,
-    );
-    setConvertedAmount(convertedAmount);
+    const initialRate = currencyRates.get(initialCurrency);
+    const targetRate = currencyRates.get(targetCurrency);
+
+    if (initialRate && targetRate && initialAmount) {
+      setShowErrorMessage(false);
+      const convertedAmount = convertCurrency(
+        initialRate,
+        targetRate,
+        initialAmount,
+      );
+      setConvertedAmount(convertedAmount);
+    } else {
+      setShowErrorMessage(true);
+    }
   }
 
   const fetchRateIfNotExists = async (currencyCode: string) => {
@@ -68,13 +79,13 @@ export function CurrencyInputForm() {
   return (
     <div className="pure-form pure-form-aligned">
       <div className="pure-control-group">
-        <label htmlFor="aligned-name">Initial Amount</label>
+        <label htmlFor="initial-amount">Initial Amount</label>
         <input
+          id="initial-amount"
           className="pure-u-1-5"
           type="number"
           step="0.01"
           min="0"
-          placeholder="Initial amount"
           required
           onChange={e => setInitialAmount(e.target.value)}
         />
@@ -122,6 +133,7 @@ export function CurrencyInputForm() {
         >Calculate
         </button>
       </div>
+      {showErrorMessage && <p className="pure-controls danger" >Error! The form has missing data</p>}
     </div>
   );
 }

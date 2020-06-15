@@ -1,0 +1,113 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`currencyInputForm renders correctly 1`] = `
+<div
+  className="pure-form pure-form-aligned"
+>
+  <div
+    className="pure-control-group"
+  >
+    <label
+      htmlFor="initial-amount"
+    >
+      Initial Amount
+    </label>
+    <input
+      className="pure-u-1-5"
+      id="initial-amount"
+      min="0"
+      onChange={[Function]}
+      required={true}
+      step="0.01"
+      type="number"
+    />
+  </div>
+  <div
+    className="pure-control-group"
+  >
+    <label
+      htmlFor="initial-currency"
+    >
+      Initial Currency
+    </label>
+    <select
+      className="pure-u-1-5"
+      defaultValue="DEFAULT"
+      id="initial-currency"
+      onChange={[Function]}
+    >
+      <option
+        disabled={true}
+        hidden={true}
+        value="DEFAULT"
+      >
+        -
+      </option>
+    </select>
+  </div>
+  <div
+    className="pure-control-group"
+  >
+    <label
+      htmlFor="target-currency"
+    >
+      Target Currency
+    </label>
+    <select
+      className="pure-u-1-5"
+      defaultValue="DEFAULT"
+      id="target-currency"
+      onChange={[Function]}
+    >
+      <option
+        disabled={true}
+        hidden={true}
+        value="DEFAULT"
+      >
+        -
+      </option>
+    </select>
+  </div>
+  <div
+    className="pure-control-group"
+  >
+    <label
+      htmlFor="conversion-rate"
+    >
+      Conversion Rate
+    </label>
+    <input
+      className="pure-u-1-5"
+      id="conversion-rates"
+      readOnly={true}
+      type="text"
+      value=""
+    />
+  </div>
+  <div
+    className="pure-control-group"
+  >
+    <label
+      htmlFor="amount-after-conversion"
+    >
+      Amount after Conversion
+    </label>
+    <input
+      className="pure-u-1-5"
+      id="amount-after-conversion"
+      readOnly={true}
+      type="text"
+    />
+  </div>
+  <div
+    className="pure-controls"
+  >
+    <button
+      className="pure-button pure-button-primary"
+      onClick={[Function]}
+    >
+      Calculate
+    </button>
+  </div>
+</div>
+`;
