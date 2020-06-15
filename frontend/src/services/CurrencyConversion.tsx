@@ -6,10 +6,20 @@ export function convertCurrency(
   initialAmount: number,
   ) {
   const ROUND_DOWN = 0;
-  return new Big(initialAmount)
+  return Big(initialAmount)
     .div(Big(startCurrencyRate))
     .mul(Big(targetCurrencyRate))
     .round(2, ROUND_DOWN)
+}
+
+export function getConversionRate(
+  startCurrencyRate: string,
+  targetCurrencyRate: string,
+) {
+  const ROUND_DOWN = 0;
+  return Big(targetCurrencyRate)
+    .div(Big(startCurrencyRate))
+    .round(6, ROUND_DOWN);
 }
 
 export async function fetchCurrencyCodes() {

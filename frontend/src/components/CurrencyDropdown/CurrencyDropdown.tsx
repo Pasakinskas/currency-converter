@@ -19,7 +19,7 @@ export function CurrencyDropdown(props: currencyDropdownProps) {
   return (
     <React.Fragment>
       <label htmlFor={id}>{labelText}</label>
-      <select id={id} className="pure-u-1-5" onChange={e => handleChange(e)}>
+      <select id={id} className="pure-u-1-5" onChange={handleChange}>
         {currencyCodes
           .sort()
           .map(code => <option key={code}>{code}</option>)

@@ -1,7 +1,12 @@
 import React, { ChangeEvent } from 'react';
 
 import { CurrencyDropdown } from "../CurrencyDropdown/CurrencyDropdown";
-import {convertCurrency, fetchCurrencyCodes, fetchCurrencyRate} from "../../services/CurrencyConversion";
+import {
+  convertCurrency,
+  fetchCurrencyCodes,
+  fetchCurrencyRate,
+  getConversionRate,
+} from "../../services/CurrencyConversion";
 
 export function CurrencyInputForm() {
   const [initialCurrency, setInitialCurrency] = React.useState("");
@@ -10,19 +15,33 @@ export function CurrencyInputForm() {
   const [convertedAmount, setConvertedAmount] = React.useState();
 
   const [currencyCodes, setCurrencyCodes] = React.useState([]);
-  const [currencyRates] = React.useState(new Map());
+  const [currencyRates, setCurrencyRates] = React.useState(new Map());
+  const [conversionRate, setConversionRate] = React.useState("");
 
   React.useEffect(() => {
     const asyncGetCurrencyCodes = async () => {
       setCurrencyCodes(await fetchCurrencyCodes())
     }
+
+    const updateConversionRate = () => {
+      const initialRate = currencyRates.get(initialCurrency);
+      const targetRate = currencyRates.get(targetCurrency);
+
+      if (initialRate && targetRate) {
+        setConversionRate(
+          getConversionRate(initialRate, targetRate)
+          .toString()
+        );
+      }
+    }
     asyncGetCurrencyCodes();
-  }, []);
+    updateConversionRate();
+  }, [currencyRates, initialCurrency, targetCurrency]);
 
   const convert = () => {
     const convertedAmount = convertCurrency(
-      currencyRates.get(initialCurrency)["rateToBaseCurrency"],
-      currencyRates.get(targetCurrency)["rateToBaseCurrency"],
+      currencyRates.get(initialCurrency),
+      currencyRates.get(targetCurrency),
       initialAmount,
     );
     setConvertedAmount(convertedAmount);
@@ -31,16 +50,19 @@ export function CurrencyInputForm() {
   const fetchRateIfNotExists = async (currencyCode: string) => {
    if (!currencyRates.has(currencyCode)) {
      const currencyRate = await fetchCurrencyRate(currencyCode);
-     currencyRates.set(currencyCode, currencyRate);
-   }
+     const newCurrencyRates = new Map(Array.from(currencyRates));
+
+     newCurrencyRates.set(currencyCode, currencyRate["rateToBaseCurrency"]);
+     setCurrencyRates(newCurrencyRates);
+    }
   }
 
   const handleChange = (
     e: ChangeEvent<HTMLSelectElement>,
     setterFunction: React.Dispatch<any>,
     ) => {
-    fetchRateIfNotExists(e.target.value);
     setterFunction(e.target.value);
+    fetchRateIfNotExists(e.target.value);
   }
 
   return (
@@ -52,7 +74,6 @@ export function CurrencyInputForm() {
           type="number"
           step="0.01"
           min="0"
-          defaultValue="0"
           placeholder="Initial amount"
           required
           onChange={e => setInitialAmount(e.target.value)}
@@ -72,6 +93,16 @@ export function CurrencyInputForm() {
           labelText="Target Currency"
           currencyCodes={currencyCodes}
           onChange={e => handleChange(e, setTargetCurrency)}
+        />
+      </div>
+      <div className="pure-control-group">
+        <label htmlFor="conversion-rate">Conversion Rate</label>
+        <input
+          className="pure-u-1-5"
+          id="conversion-rates"
+          type="text"
+          value={conversionRate}
+          readOnly={true}
         />
       </div>
       <div className="pure-control-group">
