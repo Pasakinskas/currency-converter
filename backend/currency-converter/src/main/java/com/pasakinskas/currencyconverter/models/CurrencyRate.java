@@ -1,15 +1,16 @@
 package com.pasakinskas.currencyconverter.models;
 
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 import javax.validation.Validator;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.util.Date;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,11 +29,16 @@ public class CurrencyRate {
     private String baseCurrency;
 
     @NotNull
+    @DecimalMin(value = "0.0", inclusive = false)
     @Column(precision=20, scale=10)
     private BigDecimal rateToBaseCurrency;
 
     @NotNull
-    private Instant timeRecorded;
+    private Date date;
+
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private Date createdAt;
 
     public CurrencyRate() {}
 
@@ -40,12 +46,20 @@ public class CurrencyRate {
             String currencyCode,
             String baseCurrency,
             BigDecimal rateToBaseCurrency,
-            Instant timeRecorded
+            Date date
     ) {
         this.currencyCode = currencyCode;
         this.baseCurrency = baseCurrency;
         this.rateToBaseCurrency = rateToBaseCurrency;
-        this.timeRecorded = timeRecorded;
+        this.date = date;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public Long getId() {
@@ -80,23 +94,12 @@ public class CurrencyRate {
         this.rateToBaseCurrency = rateToBaseCurrency;
     }
 
-    public Instant getTimeRecorded() {
-        return timeRecorded;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setTimeRecorded(Instant timeRecorded) {
-        this.timeRecorded = timeRecorded;
-    }
-
-    @Override
-    public String toString() {
-        return "CurrencyRate{" +
-                "id=" + id +
-                ", currencyCode='" + currencyCode + '\'' +
-                ", baseCurrency='" + baseCurrency + '\'' +
-                ", rateToBaseCurrency=" + rateToBaseCurrency +
-                ", timeRecorded=" + timeRecorded +
-                '}';
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     public boolean validate() {

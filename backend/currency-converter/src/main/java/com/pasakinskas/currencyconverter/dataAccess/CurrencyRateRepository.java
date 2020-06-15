@@ -8,10 +8,10 @@ import java.util.List;
 
 public interface CurrencyRateRepository extends JpaRepository<CurrencyRate, Long> {
 
-    CurrencyRate findFirstByCurrencyCodeOrderByTimeRecordedDesc(String currencyCode);
+    CurrencyRate findFirstByCurrencyCodeOrderByCreatedAtDesc(String currencyCode);
 
-    default CurrencyRate findByCurrencyCode(String email) {
-        return findFirstByCurrencyCodeOrderByTimeRecordedDesc(email);
+    default CurrencyRate findByCurrencyCode(String currencyCode) {
+        return findFirstByCurrencyCodeOrderByCreatedAtDesc(currencyCode);
     }
 
     @Query("SELECT DISTINCT currencyRate.currencyCode FROM CurrencyRate currencyRate")
