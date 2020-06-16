@@ -4,6 +4,9 @@ exports[`currencyInputForm renders correctly 1`] = `
 <div
   className="pure-form pure-form-aligned"
 >
+  <h3>
+    Currency Converter
+  </h3>
   <div
     className="pure-control-group"
   >
