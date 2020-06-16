@@ -28,6 +28,9 @@ public class CurrencyRateFetcher {
     @Value("${app.default-currency-code}")
     private String DEFAULT_CURRENCY_CODE;
 
+    @Value("${app.historic-api}")
+    private String HISTORIC_API;
+
     final private CurrencyRateRepository currencyRateRepository;
 
     @Autowired
@@ -39,14 +42,18 @@ public class CurrencyRateFetcher {
         return API_URL + DEFAULT_CURRENCY_CODE;
     }
 
+    private String getHistoricApiUrl(String startDate, String endDate) {
+        return HISTORIC_API + "?start_at=" + startDate + "&end_at=" + endDate + "&base=" + DEFAULT_CURRENCY_CODE;
+    }
+
     public List<CurrencyRate> updateCurrencyRates() {
-        JsonNode json = requestLiveCurrencyRates(getApiUrl());
+        JsonNode json = requestCurrencyRates(getApiUrl());
         List<CurrencyRate> fetchedCurrencyRates = parseCurrencyRates(json);
         fetchedCurrencyRates.forEach(CurrencyRate::validate);
         return currencyRateRepository.saveAll(fetchedCurrencyRates);
     }
 
-    private JsonNode requestLiveCurrencyRates(String apiUrl) {
+    private JsonNode requestCurrencyRates(String apiUrl) {
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper mapper = new ObjectMapper();
         ResponseEntity<String> response = restTemplate
@@ -90,7 +97,35 @@ public class CurrencyRateFetcher {
         return currencyRates;
     }
 
-    public void fetchHistoricCurrencyHates(Date beginDate, Date endDate) {
+    public List<CurrencyRate> fetchHistoricCurrencyHates(String beginDate, String endDate) {
+        JsonNode json = requestCurrencyRates(getHistoricApiUrl(beginDate, endDate));
+        List<CurrencyRate> historicRates = parseHistoricRates(json);
+        historicRates.forEach(CurrencyRate::validate);
+        return currencyRateRepository.saveAll(historicRates);
+    }
 
+    public List<CurrencyRate> parseHistoricRates(JsonNode json) {
+        String baseCurrency = json.get("base").textValue();
+        JsonNode historicRates = json.get("rates");
+
+        List<CurrencyRate> historicCurrencyRates = new ArrayList<>();
+        historicRates
+            .fieldNames()
+            .forEachRemaining(fieldName -> {
+                Date date = getDateFromString(fieldName, "yyyy-MM-dd");
+                JsonNode historicRateValues = historicRates.get(fieldName);
+                historicCurrencyRates.addAll(jsonToCurrencyRates(historicRateValues, baseCurrency, date));
+        });
+
+        return historicCurrencyRates;
+    }
+
+    private Date getDateFromString(String dateString, String pattern) {
+        SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+        try {
+            return formatter.parse(dateString);
+        } catch (ParseException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

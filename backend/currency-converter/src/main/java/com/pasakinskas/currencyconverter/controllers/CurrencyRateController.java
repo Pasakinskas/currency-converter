@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,5 +61,29 @@ public class CurrencyRateController {
     public ResponseEntity<List<String>> getUniqueCurrencies() {
         List<String> currencyCodes = currencyRateRepository.findDistinctCurrencyCodes();
         return new ResponseEntity<>(currencyCodes, HttpStatus.OK);
+    }
+
+    @GetMapping("/historic")
+    public ResponseEntity<List<CurrencyRate>> getHistorics() {
+        List<CurrencyRate> currencyCodes = currencyRateFetcher.fetchHistoricCurrencyHates("2020-05-01", "2020-06-01");
+        return new ResponseEntity<>(currencyCodes, HttpStatus.OK);
+    }
+
+    @GetMapping("/historic-rates/{code}")
+    public List<CurrencyRate> getCurrencyRate(
+            @PathVariable("code") String currencyCode,
+            @RequestParam("start") String startDate,
+            @RequestParam("end") String endDate
+        ) {
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            return currencyRateRepository.findCurrencyRatesBetweenDates(
+                formatter.parse(startDate),
+                formatter.parse(endDate),
+                currencyCode
+            );
+        } catch (ParseException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }
