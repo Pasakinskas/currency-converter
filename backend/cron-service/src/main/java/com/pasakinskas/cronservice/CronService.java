@@ -17,7 +17,17 @@ public class CronService {
     @Scheduled(fixedDelayString = "${service.repeat-interval}")
     public void hitApi() {
         ResponseEntity<String> response = new RestTemplate()
-                .getForEntity(API_URL, String.class);
+                .getForEntity(API_URL + "/update-rates", String.class);
+
+        if (response.getStatusCode().isError()) {
+            throw new WebServiceException("Error contacting currency converter server");
+        }
+    }
+
+    @Scheduled(fixedDelayString = "${service.once-a-month-miliseconds}")
+    public void loadHistoricRates() {
+        ResponseEntity<String> response = new RestTemplate()
+                .getForEntity(API_URL + "/historic?start=2020-04-01&end=2020-06-01", String.class);
 
         if (response.getStatusCode().isError()) {
             throw new WebServiceException("Error contacting currency converter server");
