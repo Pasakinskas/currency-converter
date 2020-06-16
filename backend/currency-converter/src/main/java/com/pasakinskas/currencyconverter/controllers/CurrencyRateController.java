@@ -64,8 +64,11 @@ public class CurrencyRateController {
     }
 
     @GetMapping("/historic")
-    public ResponseEntity<List<CurrencyRate>> getHistorics() {
-        List<CurrencyRate> currencyCodes = currencyRateFetcher.fetchHistoricCurrencyHates("2020-05-01", "2020-06-01");
+    public ResponseEntity<List<CurrencyRate>> getHistorics(
+            @RequestParam("start") String startDate,
+            @RequestParam("end") String endDate
+    ) {
+        List<CurrencyRate> currencyCodes = currencyRateFetcher.fetchHistoricCurrencyHates(startDate, endDate);
         return new ResponseEntity<>(currencyCodes, HttpStatus.OK);
     }
 
