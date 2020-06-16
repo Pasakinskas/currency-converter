@@ -3,10 +3,12 @@ import React, { ChangeEvent } from 'react';
 import { CurrencyDropdown } from "../CurrencyDropdown/CurrencyDropdown";
 import {
   convertCurrency,
-  fetchCurrencyCodes,
-  fetchCurrencyRate,
   getConversionRate,
 } from "../../services/CurrencyConversion";
+import { 
+  fetchCurrencyCodes,
+  fetchCurrencyRate,
+} from "../../services/CurrencyRetrieval";
 import "./CurrencyInputForm.css";
 
 export function CurrencyInputForm() {
@@ -78,6 +80,7 @@ export function CurrencyInputForm() {
 
   return (
     <div className="pure-form pure-form-aligned">
+      <h3>Currency Converter</h3>
       <div className="pure-control-group">
         <label htmlFor="initial-amount">Initial Amount</label>
         <input
