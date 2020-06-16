@@ -45,7 +45,7 @@ public class CurrencyRateController {
     }
 
     @GetMapping("/update-rates")
-    public ResponseEntity<List<CurrencyRateDTO>> getLiveRates() {
+    public ResponseEntity<List<CurrencyRateDTO>> updateRates() {
         List<CurrencyRate> liveRates = currencyRateFetcher.updateCurrencyRates();
         List<CurrencyRateDTO> publicRates = liveRates.stream()
                 .map(rate -> new CurrencyRateDTO(
@@ -64,7 +64,7 @@ public class CurrencyRateController {
     }
 
     @GetMapping("/historic")
-    public ResponseEntity<List<CurrencyRate>> getHistorics(
+    public ResponseEntity<List<CurrencyRate>> updateHistoricData(
             @RequestParam("start") String startDate,
             @RequestParam("end") String endDate
     ) {
@@ -73,7 +73,7 @@ public class CurrencyRateController {
     }
 
     @GetMapping("/historic-rates/{code}")
-    public List<CurrencyRate> getCurrencyRate(
+    public List<CurrencyRate> getHistoricData(
             @PathVariable("code") String currencyCode,
             @RequestParam("start") String startDate,
             @RequestParam("end") String endDate

@@ -11,6 +11,6 @@ export async function fetchCurrencyRate(currencyCode: string) {
 }
 
 export async function fetchHistoricRates(targetCurrency: string, dateFrom: string, dateTo: string) {
-  const res = await fetch(`http://localhost:8080/historic-rates/${targetCurrency}?start=${dateFrom}&end=${dateTo}`);
+  const res = await fetch(`${config.API_URL}/historic-rates/${targetCurrency}?start=${dateFrom}&end=${dateTo}`);
   return res.json();
 }

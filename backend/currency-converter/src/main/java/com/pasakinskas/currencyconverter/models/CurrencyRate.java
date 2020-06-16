@@ -102,17 +102,17 @@ public class CurrencyRate {
         this.createdAt = createdAt;
     }
 
-    public boolean validate() {
+    public void validate() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
         Set<ConstraintViolation<CurrencyRate>> violations = validator.validate(this);
-        if (violations.isEmpty()) {
-            return true;
+
+        if (!violations.isEmpty()) {
+            String errorMessage = violations
+                    .stream()
+                    .map(ConstraintViolation::getMessage)
+                    .collect(Collectors.joining(","));
+            throw new RuntimeException(errorMessage);
         }
-        String errorMessage = violations
-                .stream()
-                .map(ConstraintViolation::getMessage)
-                .collect(Collectors.joining(","));
-        throw new RuntimeException(errorMessage);
     }
 }

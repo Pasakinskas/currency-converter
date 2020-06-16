@@ -50,7 +50,7 @@ public class CurrencyRateFetcherTest {
         JsonNode jsonWithMissingData = getJsonWithMissingData();
 
         Exception exception = assertThrows(RuntimeException.class, () -> {
-            CurrencyRate testRate = currencyRateFetcher.parseCurrencyRates(jsonWithMissingData).get(0);
+            currencyRateFetcher.parseCurrencyRates(jsonWithMissingData);
         });
 
         String expectedMessage = "must be greater than 0.0";
