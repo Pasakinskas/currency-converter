@@ -11,7 +11,7 @@ Run or build spring boot project with your IDE `backend/currency-converter`
 
 Run or build spring boot project with your IDE `backend/cron-scheduler`
 
-`npm start` in `frontend` directory
+`npm install` and `npm start` in `frontend` directory
 
 
 ## Tests
@@ -21,7 +21,8 @@ React frontend and Spring boot currency-converter are covered with unit tests
 to run React tests
 ```
 cd frontend
-npm start
+npm install
+npm run test
 ```
 
 Run the backend tests with your IDE on the project `backend/currency-converter`
