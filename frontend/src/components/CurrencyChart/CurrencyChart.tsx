@@ -44,7 +44,7 @@ export function CurrencyChart() {
       rateToBaseCurrency: String
     }
     return {
-      labels: historicData.map((data: Data) => data.date),
+      labels: historicData.map((data: Data) => data.date.split("T")[0] ),
       datasets: [
         {
           label: 'Currency rate to USD',
